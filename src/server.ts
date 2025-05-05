@@ -50,32 +50,6 @@ server.tool(
   }
 );
 
-// カテゴリ詳細取得
-server.tool(
-  "zendesk_get_category",
-  "Zendesk Help CenterのカテゴリIDからカテゴリ詳細を取得します。",
-  {
-    category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
-    locale: z
-      .string()
-      .nonempty()
-      .optional()
-      .default(ZENDESK_DEFAULT_LOCALE)
-      .describe("language（e.g. ja, en-us）"),
-  },
-  async ({ category_id, locale }) => {
-    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/categories/${category_id}.json`;
-    const response = await axios.get(url);
-    const c = response.data.category;
-    const resultText = c
-      ? `ID: ${c.id}\n名前: ${c.name}\n説明: ${c.description}\nURL: ${c.html_url}\nロケール: ${c.locale}`
-      : "カテゴリが見つかりませんでした。";
-    return {
-      content: [{ type: "text", text: resultText }],
-    };
-  }
-);
-
 // セクション一覧取得（カテゴリ指定）
 server.tool(
   "zendesk_list_sections_in_category",
@@ -113,36 +87,10 @@ server.tool(
   }
 );
 
-// セクション詳細取得
-server.tool(
-  "zendesk_get_section",
-  "Zendesk Help CenterのセクションIDからセクション詳細を取得します。",
-  {
-    section_id: z.union([z.string(), z.number()]).describe("セクションID"),
-    locale: z
-      .string()
-      .nonempty()
-      .optional()
-      .default(ZENDESK_DEFAULT_LOCALE)
-      .describe("language（e.g. ja, en-us）"),
-  },
-  async ({ section_id, locale }) => {
-    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/sections/${section_id}.json`;
-    const response = await axios.get(url);
-    const s = response.data.section;
-    const resultText = s
-      ? `ID: ${s.id}\n名前: ${s.name}\n説明: ${s.description}\nURL: ${s.html_url}\nロケール: ${s.locale}\nカテゴリID: ${s.category_id}`
-      : "セクションが見つかりませんでした。";
-    return {
-      content: [{ type: "text", text: resultText }],
-    };
-  }
-);
-
 // 記事検索Tool
 server.tool(
   "zendesk_search_articles",
-  "ZenDesk Help Centerの記事をキーワードで検索します。queryに検索キーワードを指定してください。locale（e.g. ja, en-us）やper_page, pageも指定可能です。",
+  "ZenDesk Help Centerの記事をキーワードで検索します。queryに検索キーワードを指定してください。",
   {
     query: z.string().nonempty().describe("検索キーワード"),
     locale: z
