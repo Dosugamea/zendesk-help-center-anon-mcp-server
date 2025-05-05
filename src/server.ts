@@ -5,6 +5,7 @@ import axios from "axios";
 // Zendeskサブドメインを環境変数から取得
 const ZENDESK_SUBDOMAIN =
   process.env.ZENDESK_SUBDOMAIN || "your-zendesk-subdomain";
+const ZENDESK_DEFAULT_LOCALE = process.env.ZENDESK_DEFAULT_LOCALE || "ja";
 
 // MCPサーバーインスタンス
 export const server = new McpServer({
@@ -16,13 +17,14 @@ export const server = new McpServer({
 // カテゴリ一覧取得
 server.tool(
   "zendesk_list_categories",
-  "Zendesk Help Centerのカテゴリ一覧を取得します。localeは必須です（例: ja, en-us）。",
+  "Zendesk Help Centerのカテゴリ一覧を取得します。",
   {
     locale: z
       .string()
       .nonempty()
-      .default("ja")
-      .describe("言語（例: ja, en-us）"),
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
     sort_by: z.enum(["position", "created_at", "updated_at"]).optional(),
     sort_order: z.enum(["asc", "desc"]).optional(),
   },
@@ -54,7 +56,12 @@ server.tool(
   "Zendesk Help CenterのカテゴリIDからカテゴリ詳細を取得します。localeは必須です。",
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
-    locale: z.string().nonempty().describe("言語（例: ja, en-us）"),
+    locale: z
+      .string()
+      .nonempty()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
   },
   async ({ category_id, locale }) => {
     const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/${locale}/categories/${category_id}.json`;
@@ -75,7 +82,12 @@ server.tool(
   "Zendesk Help CenterのカテゴリID配下のセクション一覧を取得します。localeは必須です。",
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
-    locale: z.string().nonempty().describe("言語（例: ja, en-us）"),
+    locale: z
+      .string()
+      .nonempty()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
     sort_by: z.enum(["position", "created_at", "updated_at"]).optional(),
     sort_order: z.enum(["asc", "desc"]).optional(),
   },
@@ -107,7 +119,12 @@ server.tool(
   "Zendesk Help CenterのセクションIDからセクション詳細を取得します。localeは必須です。",
   {
     section_id: z.union([z.string(), z.number()]).describe("セクションID"),
-    locale: z.string().nonempty().describe("言語（例: ja, en-us）"),
+    locale: z
+      .string()
+      .nonempty()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
   },
   async ({ section_id, locale }) => {
     const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/${locale}/sections/${section_id}.json`;
@@ -125,10 +142,14 @@ server.tool(
 // 記事検索Tool
 server.tool(
   "zendesk_search_articles",
-  "ZenDesk Help Centerの記事をキーワードで検索します。queryに検索キーワードを指定してください。locale（例: ja, en-us）やper_page, pageも指定可能です。",
+  "ZenDesk Help Centerの記事をキーワードで検索します。queryに検索キーワードを指定してください。locale（e.g. ja, en-us）やper_page, pageも指定可能です。",
   {
     query: z.string().nonempty().describe("検索キーワード"),
-    locale: z.string().optional().describe("言語（例: ja, en-us）"),
+    locale: z
+      .string()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
     per_page: z.number().optional().describe("1ページあたりの件数"),
     page: z.number().optional().describe("ページ番号"),
   },
@@ -169,7 +190,11 @@ server.tool(
   "ZenDesk Help Centerの記事IDから記事詳細を取得します。idに記事IDを指定してください。localeも指定可能です。",
   {
     id: z.union([z.string(), z.number()]).describe("記事ID"),
-    locale: z.string().optional().describe("言語（例: ja, en-us）"),
+    locale: z
+      .string()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
   },
   async ({ id, locale }) => {
     const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/articles/${id}.json`;
