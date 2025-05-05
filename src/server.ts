@@ -53,7 +53,7 @@ server.tool(
 // カテゴリ詳細取得
 server.tool(
   "zendesk_get_category",
-  "Zendesk Help CenterのカテゴリIDからカテゴリ詳細を取得します。localeは必須です。",
+  "Zendesk Help CenterのカテゴリIDからカテゴリ詳細を取得します。",
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
     locale: z
@@ -79,7 +79,7 @@ server.tool(
 // セクション一覧取得（カテゴリ指定）
 server.tool(
   "zendesk_list_sections_in_category",
-  "Zendesk Help CenterのカテゴリID配下のセクション一覧を取得します。localeは必須です。",
+  "Zendesk Help CenterのカテゴリID配下のセクション一覧を取得します。",
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
     locale: z
@@ -116,7 +116,7 @@ server.tool(
 // セクション詳細取得
 server.tool(
   "zendesk_get_section",
-  "Zendesk Help CenterのセクションIDからセクション詳細を取得します。localeは必須です。",
+  "Zendesk Help CenterのセクションIDからセクション詳細を取得します。",
   {
     section_id: z.union([z.string(), z.number()]).describe("セクションID"),
     locale: z
