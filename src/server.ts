@@ -64,12 +64,16 @@ server.tool(
       .describe("language（e.g. ja, en-us）"),
     sort_by: z.enum(["position", "created_at", "updated_at"]).optional(),
     sort_order: z.enum(["asc", "desc"]).optional(),
+    per_page: z.number().max(100).optional().describe("1ページあたりの件数"),
+    page: z.number().optional().describe("ページ番号"),
   },
-  async ({ category_id, locale, sort_by, sort_order }) => {
+  async ({ category_id, locale, sort_by, sort_order, per_page, page }) => {
     const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/categories/${category_id}/sections.json`;
     const params: any = {};
     if (sort_by) params.sort_by = sort_by;
     if (sort_order) params.sort_order = sort_order;
+    if (per_page) params.per_page = per_page;
+    if (page) params.page = page;
     const response = await axios.get(url, { params });
     const sections = response.data.sections || [];
     const resultText =
@@ -81,8 +85,127 @@ server.tool(
                 `ID: ${s.id}\n名前: ${s.name}\n説明: ${s.description}\nURL: ${s.html_url}\n---`
             )
             .join("\n");
+    const paginationText = ((): string => {
+      if (sections.length === 0) return "";
+      const pageCurrent = response.data.page;
+      const pageTotal = response.data.page_count;
+      const perPage = response.data.per_page;
+      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+    })();
     return {
-      content: [{ type: "text", text: resultText }],
+      content: [{ type: "text", text: paginationText + resultText }],
+    };
+  }
+);
+
+// カテゴリ内の記事一覧取得（カテゴリ指定）
+server.tool(
+  "zendesk_get_articles_in_category",
+  "Zendesk Help CenterのカテゴリID配下の記事一覧を取得します。",
+  {
+    category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
+    locale: z
+      .string()
+      .nonempty()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
+    sort_by: z.enum(["position", "created_at", "updated_at"]).optional(),
+    sort_order: z.enum(["asc", "desc"]).optional(),
+    per_page: z.number().max(100).optional().describe("1ページあたりの件数"),
+    page: z.number().optional().describe("ページ番号"),
+  },
+  async ({ category_id, locale, sort_by, sort_order, per_page, page }) => {
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/categories/${category_id}/articles.json`;
+    const params: any = {};
+    if (sort_by) params.sort_by = sort_by;
+    if (sort_order) params.sort_order = sort_order;
+    if (per_page) params.per_page = per_page;
+    if (page) params.page = page;
+    const response = await axios.get(url, { params });
+    // 検索結果（タイトル＋URL＋抜粋）をテキストでまとめる
+    const articles = response.data.articles || [];
+    const resultText =
+      articles.length === 0
+        ? "該当する記事が見つかりませんでした。"
+        : articles
+            .map(
+              (a: any) =>
+                `ID: ${a.id}\nタイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
+                  a.snippet || ""
+                }\n---`
+            )
+            .join("\n");
+    const paginationText = ((): string => {
+      if (articles.length === 0) return "";
+      const pageCurrent = response.data.page;
+      const pageTotal = response.data.page_count;
+      const perPage = response.data.per_page;
+      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+    })();
+    return {
+      content: [
+        {
+          type: "text",
+          text: paginationText + resultText,
+        },
+      ],
+    };
+  }
+);
+
+// セクション内の記事一覧取得（セクション指定）
+server.tool(
+  "zendesk_get_articles_in_section",
+  "Zendesk Help CenterのセクションID配下の記事一覧を取得します。",
+  {
+    section_id: z.union([z.string(), z.number()]).describe("セクションID"),
+    locale: z
+      .string()
+      .nonempty()
+      .optional()
+      .default(ZENDESK_DEFAULT_LOCALE)
+      .describe("language（e.g. ja, en-us）"),
+    sort_by: z.enum(["position", "created_at", "updated_at"]).optional(),
+    sort_order: z.enum(["asc", "desc"]).optional(),
+    per_page: z.number().max(100).optional().describe("1ページあたりの件数"),
+    page: z.number().optional().describe("ページ番号"),
+  },
+  async ({ section_id, locale, sort_by, sort_order, per_page, page }) => {
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/sections/${section_id}/articles.json`;
+    const params: any = {};
+    if (sort_by) params.sort_by = sort_by;
+    if (sort_order) params.sort_order = sort_order;
+    if (per_page) params.per_page = per_page;
+    if (page) params.page = page;
+    const response = await axios.get(url, { params });
+    // 検索結果（タイトル＋URL＋抜粋）をテキストでまとめる
+    const articles = response.data.articles || [];
+    const resultText =
+      articles.length === 0
+        ? "該当する記事が見つかりませんでした。"
+        : articles
+            .map(
+              (a: any) =>
+                `ID: ${a.id}\nタイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
+                  a.snippet || ""
+                }\n---`
+            )
+            .join("\n");
+    const paginationText = ((): string => {
+      if (articles.length === 0) return "";
+      const pageCurrent = response.data.page;
+      const pageTotal = response.data.page_count;
+      const perPage = response.data.per_page;
+      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+    })();
+    return {
+      content: [
+        {
+          type: "text",
+          text: paginationText + resultText,
+        },
+      ],
     };
   }
 );
@@ -98,7 +221,7 @@ server.tool(
       .optional()
       .default(ZENDESK_DEFAULT_LOCALE)
       .describe("language（e.g. ja, en-us）"),
-    per_page: z.number().optional().describe("1ページあたりの件数"),
+    per_page: z.number().max(100).optional().describe("1ページあたりの件数"),
     page: z.number().optional().describe("ページ番号"),
   },
   async ({ query, locale, per_page, page }) => {
@@ -116,16 +239,23 @@ server.tool(
         : articles
             .map(
               (a: any) =>
-                `タイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
+                `ID: ${a.id}\nタイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
                   a.snippet || ""
                 }\n---`
             )
             .join("\n");
+    const paginationText = ((): string => {
+      if (articles.length === 0) return "";
+      const pageCurrent = response.data.page;
+      const pageTotal = response.data.page_count;
+      const perPage = response.data.per_page;
+      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+    })();
     return {
       content: [
         {
           type: "text",
-          text: resultText,
+          text: paginationText + resultText,
         },
       ],
     };
