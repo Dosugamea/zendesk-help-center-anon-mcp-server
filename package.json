@@ -1,0 +1,36 @@
+{
+    "name": "zendesk-help-center-mcp-server",
+    "version": "1.0.0",
+    "type": "module",
+    "description": "Zendesk HelpCenter 匿名MCPサーバー (非公式)",
+    "main": "src/server.ts",
+    "scripts": {
+        "test": "vitest",
+        "build": "vite build",
+        "start": "node dist/server.js",
+        "inspect": "npx @modelcontextprotocol/inspector npm run start"
+    },
+    "repository": {
+        "type": "git",
+        "url": "git+https://github.com/Dosugamea/zendesk-help-center-mcp-server.git"
+    },
+    "keywords": [],
+    "author": "",
+    "license": "MIT",
+    "bugs": {
+        "url": "https://github.com/Dosugamea/zendesk-help-center-mcp-server/issues"
+    },
+    "homepage": "https://github.com/Dosugamea/zendesk-help-center-mcp-server#readme",
+    "dependencies": {
+        "@modelcontextprotocol/sdk": "^1.10.1",
+        "axios": "^1.9.0",
+        "vite-tsconfig-paths": "^5.1.4",
+        "zod": "^3.24.3"
+    },
+    "devDependencies": {
+        "@types/node": "^22.14.1",
+        "builtin-modules": "^5.0.0",
+        "typescript": "^5.8.3",
+        "vitest": "^3.1.1"
+    }
+}
