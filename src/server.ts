@@ -3,8 +3,8 @@ import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import axios from "axios";
 // Zendeskサブドメインを環境変数から取得
-const ZENDESK_SUBDOMAIN =
-  process.env.ZENDESK_SUBDOMAIN || "your-zendesk-subdomain";
+const ZENDESK_SITE_DOMAIN =
+  process.env.ZENDESK_SITE_DOMAIN || "subdomain.zendesk.com";
 const ZENDESK_DEFAULT_LOCALE = process.env.ZENDESK_DEFAULT_LOCALE || "ja";
 
 // MCPサーバーインスタンス
@@ -29,7 +29,7 @@ server.tool(
     sort_order: z.enum(["asc", "desc"]).optional(),
   },
   async ({ locale, sort_by, sort_order }) => {
-    const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/${locale}/categories.json`;
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/categories.json`;
     const params: any = {};
     if (sort_by) params.sort_by = sort_by;
     if (sort_order) params.sort_order = sort_order;
@@ -64,7 +64,7 @@ server.tool(
       .describe("language（e.g. ja, en-us）"),
   },
   async ({ category_id, locale }) => {
-    const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/${locale}/categories/${category_id}.json`;
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/categories/${category_id}.json`;
     const response = await axios.get(url);
     const c = response.data.category;
     const resultText = c
@@ -92,7 +92,7 @@ server.tool(
     sort_order: z.enum(["asc", "desc"]).optional(),
   },
   async ({ category_id, locale, sort_by, sort_order }) => {
-    const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/${locale}/categories/${category_id}/sections.json`;
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/categories/${category_id}/sections.json`;
     const params: any = {};
     if (sort_by) params.sort_by = sort_by;
     if (sort_order) params.sort_order = sort_order;
@@ -127,7 +127,7 @@ server.tool(
       .describe("language（e.g. ja, en-us）"),
   },
   async ({ section_id, locale }) => {
-    const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/${locale}/sections/${section_id}.json`;
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/${locale}/sections/${section_id}.json`;
     const response = await axios.get(url);
     const s = response.data.section;
     const resultText = s
@@ -154,7 +154,7 @@ server.tool(
     page: z.number().optional().describe("ページ番号"),
   },
   async ({ query, locale, per_page, page }) => {
-    const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/articles/search.json`;
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/articles/search.json`;
     const params: any = { query };
     if (locale) params.locale = locale;
     if (per_page) params.per_page = per_page;
@@ -197,7 +197,7 @@ server.tool(
       .describe("language（e.g. ja, en-us）"),
   },
   async ({ id, locale }) => {
-    const url = `https://${ZENDESK_SUBDOMAIN}.zendesk.com/api/v2/help_center/articles/${id}.json`;
+    const url = `https://${ZENDESK_SITE_DOMAIN}/api/v2/help_center/articles/${id}.json`;
     const params: any = {};
     if (locale) params.locale = locale;
     const response = await axios.get(url, { params });
