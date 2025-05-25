@@ -2,22 +2,24 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import axios from "axios";
+import i18n from './i18n';
+
 // Zendeskサブドメインを環境変数から取得
 const ZENDESK_SITE_DOMAIN =
   process.env.ZENDESK_SITE_DOMAIN || "subdomain.zendesk.com";
-const ZENDESK_DEFAULT_LOCALE = process.env.ZENDESK_DEFAULT_LOCALE || "ja";
+const ZENDESK_DEFAULT_LOCALE = i18n.language;
 
 // MCPサーバーインスタンス
 export const server = new McpServer({
   name: "zendesk-mcp-server",
   version: "1.0.0",
-  description: "Zendesk Help Center API MCP Toolサーバー",
+  description: i18n.t('serverDescription'),
 });
 
 // カテゴリ一覧取得
 server.tool(
   "zendesk_list_categories",
-  "Zendesk Help Centerのカテゴリ一覧を取得します。",
+  i18n.t('toolDescriptions.zendesk_list_categories'),
   {
     locale: z
       .string()
@@ -37,11 +39,11 @@ server.tool(
     const categories = response.data.categories || [];
     const resultText =
       categories.length === 0
-        ? "カテゴリが見つかりませんでした。"
+        ? i18n.t('error.categoriesNotFound')
         : categories
             .map(
               (c: any) =>
-                `ID: ${c.id}\n名前: ${c.name}\n説明: ${c.description}\nURL: ${c.html_url}\n---`
+                i18n.t('categoryDetails', { id: c.id, name: c.name, description: c.description, url: c.html_url })
             )
             .join("\n");
     return {
@@ -53,7 +55,7 @@ server.tool(
 // セクション一覧取得（カテゴリ指定）
 server.tool(
   "zendesk_list_sections_in_category",
-  "Zendesk Help CenterのカテゴリID配下のセクション一覧を取得します。",
+  i18n.t('toolDescriptions.zendesk_list_sections_in_category'),
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
     locale: z
@@ -78,11 +80,11 @@ server.tool(
     const sections = response.data.sections || [];
     const resultText =
       sections.length === 0
-        ? "セクションが見つかりませんでした。"
+        ? i18n.t('error.sectionsNotFound')
         : sections
             .map(
               (s: any) =>
-                `ID: ${s.id}\n名前: ${s.name}\n説明: ${s.description}\nURL: ${s.html_url}\n---`
+                i18n.t('sectionDetails', { id: s.id, name: s.name, description: s.description, url: s.html_url })
             )
             .join("\n");
     const paginationText = ((): string => {
@@ -90,7 +92,7 @@ server.tool(
       const pageCurrent = response.data.page;
       const pageTotal = response.data.page_count;
       const perPage = response.data.per_page;
-      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+      return i18n.t('paginationInfo', { pageTotal, pageCurrent, perPage }) + "\n\n";
     })();
     return {
       content: [{ type: "text", text: paginationText + resultText }],
@@ -101,7 +103,7 @@ server.tool(
 // カテゴリ内の記事一覧取得（カテゴリ指定）
 server.tool(
   "zendesk_get_articles_in_category",
-  "Zendesk Help CenterのカテゴリID配下の記事一覧を取得します。",
+  i18n.t('toolDescriptions.zendesk_get_articles_in_category'),
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
     locale: z
@@ -127,13 +129,11 @@ server.tool(
     const articles = response.data.articles || [];
     const resultText =
       articles.length === 0
-        ? "該当する記事が見つかりませんでした。"
+        ? i18n.t('error.articlesNotFound')
         : articles
             .map(
               (a: any) =>
-                `ID: ${a.id}\nタイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
-                  a.snippet || ""
-                }\n---`
+                i18n.t('articleDetailsSimple', { id: a.id, title: a.title, url: a.html_url, snippet: a.snippet || "" })
             )
             .join("\n");
     const paginationText = ((): string => {
@@ -141,7 +141,7 @@ server.tool(
       const pageCurrent = response.data.page;
       const pageTotal = response.data.page_count;
       const perPage = response.data.per_page;
-      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+      return i18n.t('paginationInfo', { pageTotal, pageCurrent, perPage }) + "\n\n";
     })();
     return {
       content: [
@@ -157,7 +157,7 @@ server.tool(
 // セクション内の記事一覧取得（セクション指定）
 server.tool(
   "zendesk_get_articles_in_section",
-  "Zendesk Help CenterのセクションID配下の記事一覧を取得します。",
+  i18n.t('toolDescriptions.zendesk_get_articles_in_section'),
   {
     section_id: z.union([z.string(), z.number()]).describe("セクションID"),
     locale: z
@@ -183,13 +183,11 @@ server.tool(
     const articles = response.data.articles || [];
     const resultText =
       articles.length === 0
-        ? "該当する記事が見つかりませんでした。"
+        ? i18n.t('error.articlesNotFound')
         : articles
             .map(
               (a: any) =>
-                `ID: ${a.id}\nタイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
-                  a.snippet || ""
-                }\n---`
+                i18n.t('articleDetailsSimple', { id: a.id, title: a.title, url: a.html_url, snippet: a.snippet || "" })
             )
             .join("\n");
     const paginationText = ((): string => {
@@ -197,7 +195,7 @@ server.tool(
       const pageCurrent = response.data.page;
       const pageTotal = response.data.page_count;
       const perPage = response.data.per_page;
-      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+      return i18n.t('paginationInfo', { pageTotal, pageCurrent, perPage }) + "\n\n";
     })();
     return {
       content: [
@@ -213,7 +211,7 @@ server.tool(
 // 記事検索Tool
 server.tool(
   "zendesk_search_articles",
-  "ZenDesk Help Centerの記事をキーワードで検索します。queryに検索キーワードを指定してください。",
+  i18n.t('toolDescriptions.zendesk_search_articles'),
   {
     query: z.string().nonempty().describe("検索キーワード"),
     locale: z
@@ -235,13 +233,11 @@ server.tool(
     const articles = response.data.articles || [];
     const resultText =
       articles.length === 0
-        ? "該当する記事が見つかりませんでした。"
+        ? i18n.t('error.articlesNotFound')
         : articles
             .map(
               (a: any) =>
-                `ID: ${a.id}\nタイトル: ${a.title}\nURL: ${a.html_url}\n抜粋: ${
-                  a.snippet || ""
-                }\n---`
+                i18n.t('articleDetailsSimple', { id: a.id, title: a.title, url: a.html_url, snippet: a.snippet || "" })
             )
             .join("\n");
     const paginationText = ((): string => {
@@ -249,7 +245,7 @@ server.tool(
       const pageCurrent = response.data.page;
       const pageTotal = response.data.page_count;
       const perPage = response.data.per_page;
-      return `現在 ${pageTotal}ページ中${pageCurrent}ページ目 (1ページあたり${perPage}件の記事を表示中)\n\n`;
+      return i18n.t('paginationInfo', { pageTotal, pageCurrent, perPage }) + "\n\n";
     })();
     return {
       content: [
@@ -265,7 +261,7 @@ server.tool(
 // 記事詳細取得Tool
 server.tool(
   "zendesk_get_article",
-  "ZenDesk Help Centerの記事IDから記事詳細を取得します。idに記事IDを指定してください。localeも指定可能です。",
+  i18n.t('toolDescriptions.zendesk_get_article'),
   {
     id: z.union([z.string(), z.number()]).describe("記事ID"),
     locale: z
@@ -281,8 +277,8 @@ server.tool(
     const response = await axios.get(url, { params });
     const article = response.data.article;
     const resultText = article
-      ? `タイトル: ${article.title}\nURL: ${article.html_url}\n本文:\n${article.body}`
-      : "記事が見つかりませんでした。";
+      ? i18n.t('articleDetailsFull', { title: article.title, url: article.html_url, body: article.body })
+      : i18n.t('error.articleNotFound'); // Note: Singular key for a single article
     return {
       content: [
         {
