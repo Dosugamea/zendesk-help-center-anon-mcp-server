@@ -1,4 +1,5 @@
 {
+  "serverName": "zendesk-mcp-server",
   "serverDescription": "Zendesk Help Center API MCP Tool Server",
   "toolNames": {
     "zendesk_list_categories": "zendesk_list_categories",

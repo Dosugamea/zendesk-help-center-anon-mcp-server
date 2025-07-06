@@ -21,10 +21,13 @@ const TOOL_IDS = {
 } as const;
 
 // MCPサーバーインスタンス
+const serverName = process.env.MCP_SERVER_NAME || i18n.t('serverName', { defaultValue: 'zendesk-mcp-server' });
+const serverDescription = process.env.MCP_SERVER_DESCRIPTION || i18n.t('serverDescription');
+
 export const server = new McpServer({
-  name: "zendesk-mcp-server",
+  name: serverName,
   version: "1.0.0",
-  description: i18n.t('serverDescription'),
+  description: serverDescription,
 });
 
 // Helper function to get tool name with fallback
