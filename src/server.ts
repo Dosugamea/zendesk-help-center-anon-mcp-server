@@ -102,7 +102,7 @@ server.tool(
   getToolDescription(TOOL_IDS.LIST_SECTIONS_IN_CATEGORY),
   {
     category_id: z
-      .union([z.string(), z.number()])
+      .number()
       .describe("The ID of the category to list sections from."),
     locale: z
       .string()
@@ -170,7 +170,7 @@ server.tool(
   getToolDescription(TOOL_IDS.GET_ARTICLES_IN_CATEGORY),
   {
     category_id: z
-      .union([z.string(), z.number()])
+      .number()
       .describe("The ID of the category to list articles from."),
     locale: z
       .string()
@@ -244,7 +244,7 @@ server.tool(
   getToolDescription(TOOL_IDS.GET_ARTICLES_IN_SECTION),
   {
     section_id: z
-      .union([z.string(), z.number()])
+      .number()
       .describe("The ID of the section to list articles from."),
     locale: z
       .string()
@@ -382,9 +382,7 @@ server.tool(
   getToolName(TOOL_IDS.GET_ARTICLE),
   getToolDescription(TOOL_IDS.GET_ARTICLE),
   {
-    id: z
-      .union([z.string(), z.number()])
-      .describe("The ID of the article to retrieve."),
+    id: z.number().describe("The ID of the article to retrieve."),
     locale: z
       .string()
       .optional()
