@@ -1,6 +1,6 @@
 {
   "serverName": "zendesk-mcp-server",
-  "serverDescription": "Zendesk Help Center API MCP Tool Server",
+  "serverDescription": "A server that provides tools to interact with the Zendesk Help Center API. It allows listing categories, sections, and articles, as well as searching for articles and retrieving article details.",
   "toolNames": {
     "zendesk_list_categories": "zendesk_list_categories",
     "zendesk_list_sections_in_category": "zendesk_list_sections_in_category",
@@ -10,12 +10,12 @@
     "zendesk_get_article": "zendesk_get_article"
   },
   "toolDescriptions": {
-    "zendesk_list_categories": "Retrieves a list of categories from Zendesk Help Center.",
-    "zendesk_list_sections_in_category": "Retrieves a list of sections under a specific category ID in Zendesk Help Center.",
-    "zendesk_get_articles_in_category": "Retrieves a list of articles under a specific category ID in Zendesk Help Center.",
-    "zendesk_get_articles_in_section": "Retrieves a list of articles under a specific section ID in Zendesk Help Center.",
-    "zendesk_search_articles": "Searches articles in Zendesk Help Center by keywords. Specify search keywords in 'query'.",
-    "zendesk_get_article": "Retrieves article details from Zendesk Help Center by article ID. Specify the article ID in 'id'. Locale can also be specified."
+    "zendesk_list_categories": "Lists all visible categories in the Help Center. The `locale` is optional. You can sort the results. This is a good starting point for discovery.",
+    "zendesk_list_sections_in_category": "Lists all visible sections within a specific category. The `locale` is optional. The results can be paginated and sorted. Recommended to be called after `zendesk_list_categories` to get a `category_id`.",
+    "zendesk_get_articles_in_category": "Lists all visible articles within a specific category. The `locale` is optional. The results can be paginated and sorted. Can be called after `zendesk_list_categories` to get articles directly from a category.",
+    "zendesk_get_articles_in_section": "Lists all visible articles within a specific section. The `locale` is optional. The results can be paginated and sorted. Recommended to be called after `zendesk_list_sections_in_category` to get a `section_id`.",
+    "zendesk_search_articles": "Searches for articles in the Help Center. The `locale` is optional. At least one of the following parameters is required: query, category, section, label_names. The results can be paginated.",
+    "zendesk_get_article": "Retrieves details for a specific article, including its body content, by its ID. The `locale` is optional. This is typically called after finding an article through search or listing tools."
   },
   "labels": {
     "id": "ID",
