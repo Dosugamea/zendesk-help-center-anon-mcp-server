@@ -1,5 +1,11 @@
 # zendesk-help-center-anon-mcp-server
 
+![Typescript](https://img.shields.io/badge/Typescript-3178C6?style=for-the-badge&logo=typescript&logoColor=white)
+[![Docker](https://img.shields.io/badge/Docker-2496ED?style=for-the-badge&logo=docker&logoColor=white)](https://hub.docker.com/r/dosugamea/zendesk-help-center-anon-mcp)
+
+![Modified by Claude](https://img.shields.io/badge/Modified%20by-Claude-D97757?style=flat-square&logo=claude)
+![Modified by Gemini](https://img.shields.io/badge/Modified%20by-Gemini-4285F4?style=flat-square&logo=google-gemini)
+
 Zendesk HelpCenter API (匿名ユーザー認証) で 様々な情報を取得できる MCP サーバー (非公式)
 
 URL内に `/hc/` が含まれる ZenDesk Help Centerを使う 任意のサービスで利用できます
