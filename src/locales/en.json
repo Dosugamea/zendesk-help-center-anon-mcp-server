@@ -1,0 +1,33 @@
+{
+  "serverDescription": "Zendesk Help Center API MCP Tool Server",
+  "toolDescriptions": {
+    "zendesk_list_categories": "Retrieves a list of categories from Zendesk Help Center.",
+    "zendesk_list_sections_in_category": "Retrieves a list of sections under a specific category ID in Zendesk Help Center.",
+    "zendesk_get_articles_in_category": "Retrieves a list of articles under a specific category ID in Zendesk Help Center.",
+    "zendesk_get_articles_in_section": "Retrieves a list of articles under a specific section ID in Zendesk Help Center.",
+    "zendesk_search_articles": "Searches articles in Zendesk Help Center by keywords. Specify search keywords in 'query'.",
+    "zendesk_get_article": "Retrieves article details from Zendesk Help Center by article ID. Specify the article ID in 'id'. Locale can also be specified."
+  },
+  "labels": {
+    "id": "ID",
+    "name": "Name",
+    "description": "Description",
+    "url": "URL",
+    "title": "Title",
+    "excerpt": "Snippet",
+    "body": "Body"
+  },
+  "messages": {
+    "categoriesNotFound": "No categories found.",
+    "sectionsNotFound": "No sections found.",
+    "articlesNotFound": "No matching articles found.",
+    "articleNotFound": "Article not found."
+  },
+  "itemDetails": {
+    "category": "ID: {{id}}\nName: {{name}}\nDescription: {{description}}\nURL: {{url}}\n---",
+    "section": "ID: {{id}}\nName: {{name}}\nDescription: {{description}}\nURL: {{url}}\n---",
+    "articleWithSnippet": "ID: {{id}}\nTitle: {{title}}\nURL: {{url}}\nSnippet: {{snippet}}\n---",
+    "articleFull": "Title: {{title}}\nURL: {{url}}\nBody:\n{{body}}"
+  },
+  "paginationInfo": "Currently displaying page {{pageCurrent}} of {{pageTotal}} ({{perPage}} articles per page)\n\n"
+}
