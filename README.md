@@ -4,66 +4,93 @@ Zendesk HelpCenter API (匿名ユーザー認証) で 様々な情報を取得�
 
 ## 提供ツール
 
-- **`ms_creator_tag_categories`**
+- **`zendesk_list_categories`**
   - **説明:**
-    - MS Creator タグを検索するためのカテゴリ一覧を取得します。
+    - Zendesk Help Centerのカテゴリ一覧を取得します。
   - **パラメータ:**
-    - なし
+    - `locale` (オプション): 言語（例: ja, en-us、デフォルトは環境変数 `ZENDESK_DEFAULT_LOCALE`）
+    - `sort_by` (オプション): ソート基準（`position`, `created_at`, `updated_at` のいずれか）
+    - `sort_order` (オプション): ソート順（`asc`, `desc` のいずれか）
   - **戻り値:**
-    - テキスト形式のカテゴリ一覧
-- **`ms_creator_tag_sub_categories`**
+    - テキスト形式のカテゴリ一覧（ID, 名前, 説明, URL）
+- **`zendesk_list_sections_in_category`**
   - **説明:**
-    - 指定されたカテゴリ名に属するサブカテゴリの一覧を取得します。
+    - Zendesk Help CenterのカテゴリID配下のセクション一覧を取得します。
   - **パラメータ:**
-    - `categoryName` (必須): 検索したいカテゴリ名 (文字列)
+    - `category_id` (必須): カテゴリID (文字列または数値)
+    - `locale` (オプション): 言語（例: ja, en-us、デフォルトは環境変数 `ZENDESK_DEFAULT_LOCALE`）
+    - `sort_by` (オプション): ソート基準（`position`, `created_at`, `updated_at` のいずれか）
+    - `sort_order` (オプション): ソート順（`asc`, `desc` のいずれか）
+    - `per_page` (オプション): 1ページあたりの件数（最大100）
+    - `page` (オプション): ページ番号
   - **戻り値:**
-    - テキスト形式のサブカテゴリ一覧
-- **`ms_creator_tag_search_by_category`**
+    - テキスト形式のセクション一覧（ID, 名前, 説明, URL）とページネーション情報
+- **`zendesk_get_articles_in_category`**
   - **説明:**
-    - 指定されたカテゴリ名に属する MS Creator タグの一覧と説明を取得します。
+    - Zendesk Help CenterのカテゴリID配下の記事一覧を取得します。
   - **パラメータ:**
-    - `categoryName` (必須): 検索したいカテゴリ名 (文字列)
+    - `category_id` (必須): カテゴリID (文字列または数値)
+    - `locale` (オプション): 言語（例: ja, en-us、デフォルトは環境変数 `ZENDESK_DEFAULT_LOCALE`）
+    - `sort_by` (オプション): ソート基準（`position`, `created_at`, `updated_at` のいずれか）
+    - `sort_order` (オプション): ソート順（`asc`, `desc` のいずれか）
+    - `per_page` (オプション): 1ページあたりの件数（最大100）
+    - `page` (オプション): ページ番号
   - **戻り値:**
-    - テキスト形式のタグ情報一覧（タグ名と説明）
-- **`ms_creator_tag_search_by_sub_category`**
+    - テキスト形式の記事一覧（ID, タイトル, URL, 抜粋）とページネーション情報
+- **`zendesk_get_articles_in_section`**
   - **説明:**
-    - 指定されたカテゴリ内のサブカテゴリに属する MS Creator タグの一覧と説明を取得します。
+    - Zendesk Help CenterのセクションID配下の記事一覧を取得します。
   - **パラメータ:**
-    - `categoryName` (必須): 検索したいカテゴリ名 (文字列)
-    - `subCategoryName` (必須): 検索したいサブカテゴリ名 (文字列)
+    - `section_id` (必須): セクションID (文字列または数値)
+    - `locale` (オプション): 言語（例: ja, en-us、デフォルトは環境変数 `ZENDESK_DEFAULT_LOCALE`）
+    - `sort_by` (オプション): ソート基準（`position`, `created_at`, `updated_at` のいずれか）
+    - `sort_order` (オプション): ソート順（`asc`, `desc` のいずれか）
+    - `per_page` (オプション): 1ページあたりの件数（最大100）
+    - `page` (オプション): ページ番号
   - **戻り値:**
-    - テキスト形式のタグ情報一覧（タグ名と説明）
-- **`ms_creator_tag_search_by_keyword`**
+    - テキスト形式の記事一覧（ID, タイトル, URL, 抜粋）とページネーション情報
+- **`zendesk_search_articles`**
   - **説明:**
-    - タグの説明に含まれるキーワードに基づいて、関連する MS Creator タグを検索します。
+    - ZenDesk Help Centerの記事をキーワードで検索します。
   - **パラメータ:**
-    - `keyword` (必須): 検索キーワード (文字列)
+    - `query` (必須): 検索キーワード (文字列)
+    - `locale` (オプション): 言語（例: ja, en-us、デフォルトは環境変数 `ZENDESK_DEFAULT_LOCALE`）
+    - `per_page` (オプション): 1ページあたりの件数（最大100）
+    - `page` (オプション): ページ番号
   - **戻り値:**
-    - テキスト形式のタグ情報一覧（タグ名と説明）
-- **`ms_creator_tag_get_detail`**
+    - テキスト形式の検索結果（ID, タイトル, URL, 抜粋）とページネーション情報
+- **`zendesk_get_article`**
   - **説明:**
-    - 指定された正確なタグ名に一致する MS Creator タグの詳細情報（説明、カテゴリ、例など）を取得します。
+    - ZenDesk Help Centerの記事IDから記事詳細を取得します。
   - **パラメータ:**
-    - `tagName` (必須): 検索したい正確なタグ名 (文字列)
+    - `id` (必須): 記事ID (文字列または数値)
+    - `locale` (オプション): 言語（例: ja, en-us、デフォルトは環境変数 `ZENDESK_DEFAULT_LOCALE`）
   - **戻り値:**
-    - テキスト形式のタグ詳細情報
-- **`ms_creator_tag_get_source`**
-  - **説明:**
-    - 指定された正確なタグ名に一致する MS Creator タグの**ソース URL**を取得します。
-  - **パラメータ:**
-    - `tagName` (必須): 検索したい正確なタグ名 (文字列)
-  - **戻り値:**
-    - テキスト形式のタグのソース URL 情報
+    - テキスト形式の記事詳細情報（タイトル, URL, 本文）
+
+## 環境変数
+
+このサーバーは以下の環境変数をサポートしています。
+
+- **`ZENDESK_SITE_DOMAIN`** (オプション):
+  - Zendeskヘルプセンターのサブドメインを指定します。例: `yoursubdomain.zendesk.com`。
+  - 指定しない場合、デフォルト値の `subdomain.zendesk.com` が使用されます。
+- **`ZENDESK_DEFAULT_LOCALE`** (オプション):
+  - ツールが使用するデフォルトのロケール（言語）を指定します。例: `ja` または `en-us`。
+  - 指定しない場合、デフォルト値の `ja` が使用されます。
+
 
 ## インストール
 
-### 前提条件
-
-- Node.js 20.x 以上
-- Python 3.10 以上
-- pip
-
 ### 手順
+
+### ビルド済みイメージを使う場合
+
+```
+docker pull dosugamea/zendesk-help-center-mcp-server:1.0.0
+```
+
+### 手動ビルドする場合
 
 ```
 # リポジトリをコピー
@@ -90,6 +117,19 @@ VSCode Copilot Agent の場合
           "dosugamea/zendesk-help-center-mcp-server:1.0.0"
         ]
       }
+    }
+  }
+}
+```
+
+Cursor の場合
+
+```json
+{
+  "mcpServers": {
+    "zendesk-help-center-mcp-server": {
+      "command": "docker",
+      "args": ["run", "-i", "--rm", "dosugamea/zendesk-help-center-mcp-server:1.0.0"]
     }
   }
 }
