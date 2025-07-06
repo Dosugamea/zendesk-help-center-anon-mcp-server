@@ -1,5 +1,13 @@
 {
   "serverDescription": "Zendesk Help Center API MCP Toolサーバー",
+  "toolNames": {
+    "zendesk_list_categories": "zendesk_list_categories",
+    "zendesk_list_sections_in_category": "zendesk_list_sections_in_category",
+    "zendesk_get_articles_in_category": "zendesk_get_articles_in_category",
+    "zendesk_get_articles_in_section": "zendesk_get_articles_in_section",
+    "zendesk_search_articles": "zendesk_search_articles",
+    "zendesk_get_article": "zendesk_get_article"
+  },
   "toolDescriptions": {
     "zendesk_list_categories": "Zendesk Help Centerのカテゴリ一覧を取得します。",
     "zendesk_list_sections_in_category": "Zendesk Help CenterのカテゴリID配下のセクション一覧を取得します。",
