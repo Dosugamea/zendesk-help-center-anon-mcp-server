@@ -2,24 +2,50 @@ import { StdioServerTransport } from "@modelcontextprotocol/sdk/server/stdio.js"
 import { McpServer } from "@modelcontextprotocol/sdk/server/mcp.js";
 import { z } from "zod";
 import axios from "axios";
-import i18n from './i18n';
+import i18n, { i18nPromise } from './i18n'; // Import the promise
+
+await i18nPromise; // Wait for i18n to initialize at the top level
 
 // Zendeskサブドメインを環境変数から取得
 const ZENDESK_SITE_DOMAIN =
   process.env.ZENDESK_SITE_DOMAIN || "subdomain.zendesk.com";
 const ZENDESK_DEFAULT_LOCALE = i18n.language;
 
+const TOOL_IDS = {
+  LIST_CATEGORIES: "zendesk_list_categories",
+  LIST_SECTIONS_IN_CATEGORY: "zendesk_list_sections_in_category",
+  GET_ARTICLES_IN_CATEGORY: "zendesk_get_articles_in_category",
+  GET_ARTICLES_IN_SECTION: "zendesk_get_articles_in_section",
+  SEARCH_ARTICLES: "zendesk_search_articles",
+  GET_ARTICLE: "zendesk_get_article",
+} as const;
+
 // MCPサーバーインスタンス
+const serverName = process.env.MCP_SERVER_NAME || i18n.t('serverName', { defaultValue: 'zendesk-mcp-server' });
+const serverDescription = process.env.MCP_SERVER_DESCRIPTION || i18n.t('serverDescription');
+
 export const server = new McpServer({
-  name: "zendesk-mcp-server",
+  name: serverName,
   version: "1.0.0",
-  description: i18n.t('serverDescription'),
+  description: serverDescription,
 });
+
+// Helper function to get tool name with fallback
+const getToolName = (toolId: string): string => {
+  const envVarName = `MCP_TOOL_NAME_${toolId.toUpperCase()}`;
+  return process.env[envVarName] || i18n.t(`toolNames.${toolId}`, { defaultValue: toolId });
+};
+
+// Helper function to get tool description with fallback
+const getToolDescription = (toolId: string): string => {
+  const envVarDescription = `MCP_TOOL_DESCRIPTION_${toolId.toUpperCase()}`;
+  return process.env[envVarDescription] || i18n.t(`toolDescriptions.${toolId}`);
+};
 
 // カテゴリ一覧取得
 server.tool(
-  "zendesk_list_categories",
-  i18n.t('toolDescriptions.zendesk_list_categories'),
+  getToolName(TOOL_IDS.LIST_CATEGORIES),
+  getToolDescription(TOOL_IDS.LIST_CATEGORIES),
   {
     locale: z
       .string()
@@ -54,8 +80,8 @@ server.tool(
 
 // セクション一覧取得（カテゴリ指定）
 server.tool(
-  "zendesk_list_sections_in_category",
-  i18n.t('toolDescriptions.zendesk_list_sections_in_category'),
+  getToolName(TOOL_IDS.LIST_SECTIONS_IN_CATEGORY),
+  getToolDescription(TOOL_IDS.LIST_SECTIONS_IN_CATEGORY),
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
     locale: z
@@ -102,8 +128,8 @@ server.tool(
 
 // カテゴリ内の記事一覧取得（カテゴリ指定）
 server.tool(
-  "zendesk_get_articles_in_category",
-  i18n.t('toolDescriptions.zendesk_get_articles_in_category'),
+  getToolName(TOOL_IDS.GET_ARTICLES_IN_CATEGORY),
+  getToolDescription(TOOL_IDS.GET_ARTICLES_IN_CATEGORY),
   {
     category_id: z.union([z.string(), z.number()]).describe("カテゴリID"),
     locale: z
@@ -156,8 +182,8 @@ server.tool(
 
 // セクション内の記事一覧取得（セクション指定）
 server.tool(
-  "zendesk_get_articles_in_section",
-  i18n.t('toolDescriptions.zendesk_get_articles_in_section'),
+  getToolName(TOOL_IDS.GET_ARTICLES_IN_SECTION),
+  getToolDescription(TOOL_IDS.GET_ARTICLES_IN_SECTION),
   {
     section_id: z.union([z.string(), z.number()]).describe("セクションID"),
     locale: z
@@ -210,8 +236,8 @@ server.tool(
 
 // 記事検索Tool
 server.tool(
-  "zendesk_search_articles",
-  i18n.t('toolDescriptions.zendesk_search_articles'),
+  getToolName(TOOL_IDS.SEARCH_ARTICLES),
+  getToolDescription(TOOL_IDS.SEARCH_ARTICLES),
   {
     query: z.string().nonempty().describe("検索キーワード"),
     locale: z
@@ -260,8 +286,8 @@ server.tool(
 
 // 記事詳細取得Tool
 server.tool(
-  "zendesk_get_article",
-  i18n.t('toolDescriptions.zendesk_get_article'),
+  getToolName(TOOL_IDS.GET_ARTICLE),
+  getToolDescription(TOOL_IDS.GET_ARTICLE),
   {
     id: z.union([z.string(), z.number()]).describe("記事ID"),
     locale: z

@@ -5,6 +5,7 @@ import pkg from "./package.json"; // package.json をインポート (tsconfig.j
 import builtins from "builtin-modules"; // Node.js組み込みモジュールリスト (要インストール: npm i -D builtin-modules)
 
 export default defineConfig({
+  publicDir: 'public', // Explicitly set public directory
   build: {
     target: "node20",
     outDir: "dist", // Output directory

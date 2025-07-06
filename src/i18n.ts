@@ -1,10 +1,16 @@
 import i18next from 'i18next';
 import Backend from 'i18next-fs-backend';
 import path from 'path';
+import { fileURLToPath } from 'url'; // Import necessary function
+
+// Get the directory name in ES module scope
+const __filename = fileURLToPath(import.meta.url);
+const __dirname = path.dirname(__filename);
 
 const lang = process.env.LANG || 'ja'; // Default to Japanese if LANG is not set
 
-i18next
+// Initialize i18next and export the promise
+export const i18nPromise = i18next
   .use(Backend)
   .init({
     fallbackLng: 'ja', // Fallback to Japanese if a translation is missing in the current language
@@ -20,4 +26,6 @@ i18next
     },
   });
 
+// Export i18next instance directly for convenience,
+// but ensure init is complete before using t() extensively at startup
 export default i18next;
