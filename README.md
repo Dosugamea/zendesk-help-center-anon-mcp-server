@@ -127,8 +127,10 @@ URL内に `/hc/` が含まれる ZenDesk Help Centerを使う 任意のサービ
 
 ### ビルド済みイメージを使う場合
 
+[Docker Hub](https://hub.docker.com/r/dosugamea/zendesk-help-center-anon-mcp) からビルド済みイメージを取得してください (amd64, arm64対応)
+
 ```
-docker pull dosugamea/zendesk-help-center-mcp-server:1.0.0
+docker pull dosugamea/zendesk-help-center-anon-mcp:1.0.0
 ```
 
 ### 手動ビルドする場合
@@ -189,7 +191,7 @@ docker build -t ms-creator-mcp-server:1.0.0 .
         "MCP_SERVER_NAME",
         "-e",
         "MCP_SERVER_DESCRIPTION",
-        "dosugamea/zendesk-help-center-mcp-server:1.0.0"
+        "dosugamea/zendesk-help-center-anon-mcp:1.0.0"
       ],
       "env": {
         "MCP_SERVER_NAME": "makeshop-help-mcp",
